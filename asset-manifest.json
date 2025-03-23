@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/lubit_ne_lubit/static/css/main.0512c44b.css",
+    "main.js": "/lubit_ne_lubit/static/js/main.86477bbd.js",
+    "index.html": "/lubit_ne_lubit/index.html",
+    "main.0512c44b.css.map": "/lubit_ne_lubit/static/css/main.0512c44b.css.map",
+    "main.86477bbd.js.map": "/lubit_ne_lubit/static/js/main.86477bbd.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.0512c44b.css",
+    "static/js/main.86477bbd.js"
+  ]
+}
