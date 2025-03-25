@@ -144,15 +144,15 @@ const ExportInstructions: React.FC = () => {
           
           <Box sx={{ 
             mt: 2, 
-            bgcolor: isDarkMode ? 'rgba(33, 150, 243, 0.1)' : 'info.main', 
-            color: isDarkMode ? 'primary.light' : 'info.contrastText', 
+            bgcolor: isDarkMode ? 'rgba(33, 150, 243, 0.1)' : 'rgba(33, 150, 243, 0.05)', 
+            color: isDarkMode ? theme.palette.text.primary : theme.palette.text.primary, 
             p: 2, 
             borderRadius: 1 
           }}>
             <Typography variant="body2">
               После экспорта вы получите файл (один или несколько файлов) HTML или JSON, который можно загрузить в приложение 
               для анализа. Приложение извлечет текст сообщений и проанализирует их содержимое 
-              с помощью искусственного интеллекта.
+              с помощью нейросети.
             </Typography>
           </Box>
         </AccordionDetails>

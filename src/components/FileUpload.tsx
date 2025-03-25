@@ -7,18 +7,16 @@ import {
   Alert,
   AlertTitle,
   useTheme,
-  Chip,
   List,
   ListItem,
   ListItemIcon,
-  ListItemText,
-  Badge
+  ListItemText
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DescriptionIcon from '@mui/icons-material/Description';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
-import { analyzeChatHistory, analyzeMultipleChats, hasApiKey } from '../services/geminiService';
+import { analyzeMultipleChats, hasApiKey } from '../services/geminiService';
 
 interface FileUploadProps {
   onAnalysisComplete: (result: string) => void;
@@ -383,6 +381,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onAnalysisComplete }) => {
         <UploadBox
           isDragging={isDragging}
           isDarkMode={isDarkMode}
+          onDragEnter={handleDragEnter}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}

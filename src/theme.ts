@@ -8,7 +8,7 @@ export const getTheme = (mode: PaletteMode) => createTheme({
       ? {
         // Светлая тема
         primary: {
-          main: '#2196f3',
+          main: '#444444',
         },
         secondary: {
           main: '#f50057',
@@ -21,7 +21,7 @@ export const getTheme = (mode: PaletteMode) => createTheme({
       : {
         // Тёмная тема, основанная на примере из изображений
         primary: {
-          main: '#2196f3',
+          main: '#444444',
         },
         secondary: {
           main: '#f50057',

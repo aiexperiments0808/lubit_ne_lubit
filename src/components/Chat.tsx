@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { 
   Box, 
   TextField, 
-  Button, 
   Paper, 
   Typography, 
   CircularProgress,
@@ -15,6 +14,8 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DoneIcon from '@mui/icons-material/Done';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { sendMessage, ChatMessageHistory } from '../services/geminiService';
 
 interface ChatProps {
@@ -136,10 +137,91 @@ const Chat: React.FC<ChatProps> = ({ initialAnalysis }) => {
                   ? (isDarkMode ? '#1565c0' : '#e3f2fd')
                   : (isDarkMode ? 'rgba(255, 255, 255, 0.05)' : '#fff'),
                 color: message.role === 'user' && isDarkMode ? '#fff' : 'inherit',
-                position: 'relative'
+                position: 'relative',
+                
+                // Стили для Markdown контента
+                '& .markdown': {
+                  '& p': { margin: '0.5em 0' },
+                  '& h1, & h2, & h3, & h4, & h5, & h6': { 
+                    margin: '0.5em 0',
+                    fontWeight: 'bold',
+                    lineHeight: 1.2
+                  },
+                  '& h1': { fontSize: '1.4em' },
+                  '& h2': { fontSize: '1.3em' },
+                  '& h3': { fontSize: '1.2em' },
+                  '& h4': { fontSize: '1.1em' },
+                  '& h5, & h6': { fontSize: '1em' },
+                  '& ul, & ol': { paddingLeft: '1.5em', margin: '0.5em 0' },
+                  '& li': { margin: '0.25em 0' },
+                  '& a': {
+                    color: isDarkMode ? '#90caf9' : '#1976d2',
+                    textDecoration: 'underline'
+                  },
+                  '& blockquote': {
+                    borderLeft: isDarkMode 
+                      ? '4px solid rgba(255, 255, 255, 0.2)' 
+                      : '4px solid rgba(0, 0, 0, 0.2)',
+                    margin: '0.5em 0',
+                    padding: '0.5em 0 0.5em 1em',
+                    fontStyle: 'italic'
+                  },
+                  '& code': {
+                    backgroundColor: isDarkMode 
+                      ? 'rgba(255, 255, 255, 0.1)' 
+                      : 'rgba(0, 0, 0, 0.1)',
+                    padding: '0.2em 0.4em',
+                    borderRadius: '3px',
+                    fontFamily: 'monospace',
+                    fontSize: '0.9em'
+                  },
+                  '& pre': {
+                    backgroundColor: isDarkMode 
+                      ? 'rgba(255, 255, 255, 0.1)' 
+                      : 'rgba(0, 0, 0, 0.1)',
+                    padding: '1em',
+                    borderRadius: '4px',
+                    overflowX: 'auto',
+                    '& code': {
+                      backgroundColor: 'transparent',
+                      padding: 0
+                    }
+                  },
+                  '& img': {
+                    maxWidth: '100%',
+                    height: 'auto'
+                  },
+                  '& table': {
+                    borderCollapse: 'collapse',
+                    width: '100%',
+                    margin: '1em 0'
+                  },
+                  '& th, & td': {
+                    border: isDarkMode 
+                      ? '1px solid rgba(255, 255, 255, 0.2)'
+                      : '1px solid rgba(0, 0, 0, 0.2)',
+                    padding: '0.5em'
+                  },
+                  '& hr': {
+                    border: 'none',
+                    borderTop: isDarkMode 
+                      ? '1px solid rgba(255, 255, 255, 0.2)'
+                      : '1px solid rgba(0, 0, 0, 0.2)',
+                    margin: '1em 0'
+                  },
+                  '& strong': {
+                    fontWeight: 'bold'
+                  },
+                  '& em': {
+                    fontStyle: 'italic'
+                  },
+                  '& del': {
+                    textDecoration: 'line-through'
+                  }
+                }
               }}
             >
-              {/* Кнопка копирования в нижнем правом углу */}
+              {/* Кнопка копирования */}
               <Tooltip 
                 title={copiedMessageIndex === index ? "Скопировано!" : "Копировать"} 
                 arrow
@@ -173,9 +255,12 @@ const Chat: React.FC<ChatProps> = ({ initialAnalysis }) => {
                 </IconButton>
               </Tooltip>
               
-              <Typography variant="body1" component="div" sx={{ whiteSpace: 'pre-wrap' }}>
-                {message.parts}
-              </Typography>
+              {/* Markdown контент */}
+              <Box className="markdown">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {message.parts}
+                </ReactMarkdown>
+              </Box>
             </Paper>
           </Box>
         ))}
@@ -224,7 +309,18 @@ const Chat: React.FC<ChatProps> = ({ initialAnalysis }) => {
           size="small"
           sx={{
             '& .MuiOutlinedInput-root': {
-              backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'transparent'
+              backgroundColor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+              '& fieldset': {
+                borderWidth: '3px',
+                borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)'
+              },
+              '&:hover fieldset': {
+                borderWidth: '3px',
+                borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)'
+              },
+              '&.Mui-focused fieldset': {
+                borderWidth: '3px'
+              }
             }
           }}
         />

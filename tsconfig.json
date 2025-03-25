@@ -18,14 +18,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "react": ["./node_modules/react"],
-      "@mui/material": ["./node_modules/@mui/material"],
-      "@mui/icons-material/*": ["./node_modules/@mui/icons-material/*"],
-      "@mui/material/styles": ["./node_modules/@mui/material/styles"]
-    }
+    "jsx": "react-jsx"
   },
   "include": [
     "src"

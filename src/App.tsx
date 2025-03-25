@@ -12,7 +12,6 @@ import { hasApiKey } from './services/geminiService';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useThemeContext } from './contexts/ThemeContext';
 import { getTheme } from './theme';
-import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 // Компонент оболочки с доступом к ThemeContext
 const AppWithTheme: React.FC = () => {
@@ -137,24 +136,18 @@ const AppWithTheme: React.FC = () => {
               sx={{ mb: 0, display: 'flex', alignItems: 'center' }}
             >
               <Box 
-                component="span" 
+                component="img"
+                src={`${process.env.PUBLIC_URL}/logo_flover_bubble.png`}
+                alt="ЛюБит / Не люБит"
                 sx={{ 
                   mr: 1, 
-                  display: 'inline-flex', 
-                  color: '#ffffff',
-                  backgroundColor: '#FF9800',
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '8px',
-                  justifyContent: 'center',
-                  alignItems: 'center'
+                  width: '72px',
+                  height: '72px',
                 }}
-              >
-                <ChatBubbleOutlineIcon />
-              </Box>
-              <Box component="span" sx={{ color: 'primary.main' }}>ЛюБит</Box>
+              />
+              <Box component="span" sx={{ color: mode === 'dark' ? '#ffffff' : 'primary.main' }}>ЛюБит</Box>
               <Box component="span" sx={{ color: 'secondary.main' }}> / </Box>
-              <Box component="span" sx={{ color: 'primary.main' }}>Не люБит</Box>
+              <Box component="span" sx={{ color: mode === 'dark' ? '#ffffff' : 'primary.main' }}>Не люБит</Box>
             </Typography>
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Tooltip title={mode === 'light' ? "Включить тёмную тему" : "Включить светлую тему"}>
@@ -174,13 +167,13 @@ const AppWithTheme: React.FC = () => {
             </Box>
           </Box>
           
-          <Typography 
-            variant="body1" 
-            color="text.secondary" 
-            align="center"
+          <Typography
+            variant="body1"
+            component="h1"
+            gutterBottom
             sx={{ mb: 4 }}
           >
-            Анализ переписки между людьми с помощью искусственного интеллекта
+            Анализ переписки между людьми в Telegram с помощью нейросети
           </Typography>
 
           {!hasApiKey() && (

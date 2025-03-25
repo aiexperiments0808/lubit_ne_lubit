@@ -1,41 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import App from './App';
 import './index.css';
+import App from './App';
+import { ThemeProvider } from './contexts/ThemeContext';
 
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#1976d2',
-    },
-    secondary: {
-      main: '#dc004e',
-    },
-  },
-  typography: {
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-    ].join(','),
-  },
-});
+// Код для обработки перенаправления с 404.html
+(function() {
+  const redirect = sessionStorage.getItem('redirect');
+  if (redirect) {
+    sessionStorage.removeItem('redirect');
+    
+    // В публичном URL будет '/lubit_ne_lubit'
+    const publicUrl = '/lubit_ne_lubit';
+    
+    // Определяем, нужно ли добавить publicUrl к пути
+    const path = redirect.startsWith(publicUrl) 
+      ? redirect 
+      : publicUrl + redirect;
+      
+    window.history.replaceState(null, '', path);
+  }
+})();
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
-
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <ThemeProvider>
       <App />
     </ThemeProvider>
   </React.StrictMode>
