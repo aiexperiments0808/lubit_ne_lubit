@@ -17,6 +17,9 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from '@mui/material/styles';
 import { analyzeMultipleChats, hasApiKey } from '../services/geminiService';
+import { ChatAnalyzer } from '../services/chatAnalyzer';
+import { ChatStatistics } from '../types/chat';
+import ChatStatisticsComponent from './ChatStatistics';
 
 interface FileUploadProps {
   onAnalysisComplete: (result: string) => void;
@@ -52,7 +55,11 @@ const FileUpload: React.FC<FileUploadProps> = ({ onAnalysisComplete }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [processedFiles, setProcessedFiles] = useState<{name: string, content: string}[]>([]);
+  const [processedFiles, setProcessedFiles] = useState<{
+    name: string;
+    content: string;
+    statistics?: ChatStatistics;
+  }[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragEnter = (e: React.DragEvent) => {
@@ -91,7 +98,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onAnalysisComplete }) => {
     return true;
   };
 
-  const extractChatContent = async (file: File): Promise<string> => {
+  const extractChatContent = async (file: File): Promise<{ content: string; statistics?: ChatStatistics }> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
@@ -99,35 +106,19 @@ const FileUpload: React.FC<FileUploadProps> = ({ onAnalysisComplete }) => {
         try {
           const content = event.target?.result as string;
           
-          // Проверяем, JSON ли это
           if (file.name.endsWith('.json')) {
             try {
-              const jsonData = JSON.parse(content);
-              // Извлекаем сообщения из JSON структуры Telegram
-              if (jsonData.messages) {
-                const messages = jsonData.messages
-                  .map((msg: any) => {
-                    // Извлекаем имя, дату и текст сообщения
-                    const from = msg.from || 'Unknown';
-                    const date = msg.date || '';
-                    const text = Array.isArray(msg.text) 
-                      ? msg.text.map((t: any) => (typeof t === 'string' ? t : t.text)).join('')
-                      : msg.text || '';
-                    
-                    return `${from} (${date}): ${text}`;
-                  })
-                  .join('\n');
-                
-                resolve(messages);
-              } else {
-                reject(new Error('Неверный формат JSON файла Telegram'));
-              }
+              // Анализируем JSON файл для получения статистики
+              const analyzer = new ChatAnalyzer(content);
+              const statistics = analyzer.analyze();
+              
+              // Возвращаем оригинальный JSON контент и статистику
+              resolve({ content, statistics });
             } catch (e) {
               reject(new Error('Ошибка при парсинге JSON'));
             }
-          } 
-          // Обрабатываем HTML
-          else if (file.name.endsWith('.html')) {
+          } else if (file.name.endsWith('.html')) {
+            // Для HTML файлов оставляем старую логику
             const parser = new DOMParser();
             const doc = parser.parseFromString(content, 'text/html');
             const messages = Array.from(doc.querySelectorAll('.message')).map(msg => {
@@ -138,11 +129,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onAnalysisComplete }) => {
               return `${from} (${date}): ${text}`;
             }).join('\n');
             
-            if (messages) {
-              resolve(messages);
-            } else {
-              reject(new Error('Не удалось извлечь сообщения из HTML'));
-            }
+            resolve({ content: messages });
           } else {
             reject(new Error('Неподдерживаемый формат файла'));
           }
@@ -195,21 +182,26 @@ const FileUpload: React.FC<FileUploadProps> = ({ onAnalysisComplete }) => {
     
     try {
       // Обрабатываем каждый файл
-      const processedContents: {name: string, content: string}[] = [];
+      const processedContents: {
+        name: string;
+        content: string;
+        statistics?: ChatStatistics;
+      }[] = [];
       
       for (const file of validFiles) {
         try {
-          const chatContent = await extractChatContent(file);
+          const { content, statistics } = await extractChatContent(file);
           
           // Если контент слишком короткий, пропускаем файл
-          if (chatContent.length < 100) {
+          if (content.length < 100) {
             invalidFiles.push(file.name + ' (слишком короткий контент)');
             continue;
           }
           
           processedContents.push({
             name: file.name,
-            content: chatContent
+            content,
+            statistics
           });
         } catch (fileError) {
           console.error(`Ошибка при обработке файла ${file.name}:`, fileError);
@@ -327,35 +319,43 @@ const FileUpload: React.FC<FileUploadProps> = ({ onAnalysisComplete }) => {
           <Typography variant="h6" sx={{ mb: 1 }}>
             Загруженные файлы ({processedFiles.length})
           </Typography>
-          <List sx={{ 
-            bgcolor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'background.paper',
-            borderRadius: 1,
-            mb: 2
-          }}>
-            {processedFiles.map((file, index) => (
-              <ListItem 
-                key={index}
-                secondaryAction={
-                  <Button 
-                    size="small" 
-                    color="error"
-                    onClick={() => handleRemoveFile(index)}
-                    startIcon={<DeleteIcon />}
-                  >
-                    Удалить
-                  </Button>
-                }
-              >
-                <ListItemIcon>
-                  <DescriptionIcon color="primary" />
-                </ListItemIcon>
-                <ListItemText 
-                  primary={file.name} 
-                  secondary={`${Math.round(file.content.length / 100) / 10} KB`} 
-                />
-              </ListItem>
-            ))}
-          </List>
+          
+          {/* Отображаем статистику для каждого JSON файла */}
+          {processedFiles.map((file, index) => (
+            <Box key={index}>
+              <List sx={{ 
+                bgcolor: isDarkMode ? 'rgba(255, 255, 255, 0.05)' : 'background.paper',
+                borderRadius: 1,
+                mb: 2
+              }}>
+                <ListItem
+                  secondaryAction={
+                    <Button 
+                      size="small" 
+                      color="error"
+                      onClick={() => handleRemoveFile(index)}
+                      startIcon={<DeleteIcon />}
+                    >
+                      Удалить
+                    </Button>
+                  }
+                >
+                  <ListItemIcon>
+                    <DescriptionIcon color="primary" />
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={file.name} 
+                    secondary={`${Math.round(file.content.length / 100) / 10} KB`} 
+                  />
+                </ListItem>
+              </List>
+              
+              {/* Показываем статистику только для JSON файлов */}
+              {file.statistics && (
+                <ChatStatisticsComponent statistics={file.statistics} />
+              )}
+            </Box>
+          ))}
           
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between' }}>
             <Button

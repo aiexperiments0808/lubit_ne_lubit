@@ -1,0 +1,47 @@
+{
+ "name": "Лена",
+ "type": "personal_chat",
+ "id": 5296654808,
+ "messages": [
+  {
+   "id": 5645,
+   "type": "service",
+   "date": "2022-03-11T18:31:05",
+   "date_unixtime": "1647012665",
+   "actor": "Лена Никипелова",
+   "actor_id": "user5296654808",
+   "action": "joined_telegram",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 29879,
+   "type": "message",
+   "date": "2024-04-18T15:45:29",
+   "date_unixtime": "1713444329",
+   "from": "Лена Никипелова",
+   "from_id": "user5296654808",
+   "text": "Сережа, привет.\nЭто Лена Никипелова.\nПоказания счётчика:\n133463",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Сережа, привет.\nЭто Лена Никипелова.\nПоказания счётчика:\n133463"
+    }
+   ]
+  },
+  {
+   "id": 29932,
+   "type": "message",
+   "date": "2024-04-18T17:19:07",
+   "date_unixtime": "1713449947",
+   "from": "Сергей",
+   "from_id": "user826579274",
+   "text": "Спасибо большое, Лена!",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Спасибо большое, Лена!"
+    }
+   ]
+  }
+]} 

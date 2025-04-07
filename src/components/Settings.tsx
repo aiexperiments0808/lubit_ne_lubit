@@ -248,7 +248,7 @@ const Settings: React.FC<SettingsProps> = ({ open, onClose, onSave }) => {
 
   const handleResetSystemPrompt = () => {
     // Сбрасываем к значению по умолчанию
-    setSystemPromptState(getSystemPrompt(true));
+    setSystemPromptState(getSystemPrompt(undefined, true));
   };
 
   // Получение описания модели

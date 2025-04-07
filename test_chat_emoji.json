@@ -1,0 +1,37 @@
+{
+  "name": "Лена",
+  "type": "personal_chat",
+  "id": 5296654808,
+  "messages": [
+    {
+      "id": 1,
+      "type": "message",
+      "date": "2024-03-25T12:00:00",
+      "date_unixtime": "1711368000",
+      "from": "Лена Никипелова",
+      "from_id": "user5296654808",
+      "text": "Привет! 👋 Как дела? 😊 🌞",
+      "text_entities": []
+    },
+    {
+      "id": 2,
+      "type": "message",
+      "date": "2024-03-25T12:01:00",
+      "date_unixtime": "1711368060",
+      "from": "Сергей",
+      "from_id": "user826579274",
+      "text": "Привет! ❤️ Всё хорошо! 🎉 🎈 🎊",
+      "text_entities": []
+    },
+    {
+      "id": 3,
+      "type": "message",
+      "date": "2024-03-25T12:02:00",
+      "date_unixtime": "1711368120",
+      "from": "Лена Никипелова",
+      "from_id": "user5296654808",
+      "text": "Отлично! 🇷🇺 👨‍👩‍👧‍👦 🏃‍♂️",
+      "text_entities": []
+    }
+  ]
+} 
